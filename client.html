@@ -21,84 +21,115 @@
 
         const screen = document.getElementById('screen')
         const context = screen.getContext('2d')
-        document.addEventListener('keydown', createEventListener)
 
 
-        //regras de negócio
-        function movePlayer(command) {
-            const player = state.players[command.player]
-            const keyPressed = command.keyPressed
+        const game = createGame()
+        game.renderGame()
 
-            if (keyPressed === "ArrowUp" && player.y > 0) {
-                player.y --
-            }
+        const keyboardListener = createKeyboardListener()
+        keyboardListener.addObserver(game.movePlayer)
 
-            if (keyPressed === "ArrowDown" && player.y < screen.height) {
-                player.y ++
-            }
 
-            if (keyPressed === "ArrowLeft" && player.x > 0) {
-                player.x --
-            }
-
-            if (keyPressed === "ArrowRight" && player.x < screen.width) {
-                player.x ++
-            }
-        }
-
-        //obter todos os inputs necessários no jogo
-        function createEventListener(event){
-            const keyPressed = event.key
-            
+        function createKeyboardListener(){
+        
             const state = {
-                player: 'player1',
-                keyPressed
+                observers: []
             }
 
-            movePlayer(state)
+            function addObserver(observerFunction) {
+                state.observers.push(observerFunction)
+            }
 
+            function notifyAll(command) {
+                for (const observerFunction of state.observers) {
+                    observerFunction(command)
+                }
+            }
+
+            document.addEventListener('keydown', createEventListener)
+
+            //obter todos os inputs necessários no jogo
+            function createEventListener(event){
+                const keyPressed = event.key
+                
+                const state = {
+                    player: 'player1',
+                    keyPressed
+                }
+
+                notifyAll(state)
+
+            }
+
+            return {
+                addObserver
+            }
         }
 
-        
 
-        //renderizar o jogo para o usuário
-        const state = {
-            players: {
-                'player1': { x:1, y:1 },
-                'player2': { x:5, y:7 }
-            },
+        function createGame(){ 
 
-            fruits: {
-                'fruit1': { x:3, y:1 }
-            }
-        }
+            //regras de negócio
+            function movePlayer(command) {
+                const player = game.state.players[command.player]
+                const keyPressed = command.keyPressed
 
-        renderGame()
-        
-        function renderGame(){
+                if (keyPressed === "ArrowUp" && player.y > 0) {
+                    player.y --
+                }
 
-            context.clearRect(0, 0, 10, 10)
+                if (keyPressed === "ArrowDown" && player.y + 1 < screen.height) {
+                    player.y ++
+                }
 
-            for (const playerId in state.players) {
-                const player = state.players[playerId]
-                context.fillStyle = 'black'
-                context.fillRect(player.x, player.y, 1, 1)
-            }
+                if (keyPressed === "ArrowLeft" && player.x > 0) {
+                    player.x --
+                }
 
-            for (const fruitId in state.fruits) {
-                const fruit = state.fruits[fruitId]
-                context.fillStyle = 'green'
-                context.fillRect(fruit.x, fruit.y, 1, 1)
+                if (keyPressed === "ArrowRight" && player.x + 1 < screen.width) {
+                    player.x ++
+                }
             }
 
-            requestAnimationFrame(renderGame)
+            //renderizar o jogo para o usuário
+            const state = {
+                players: {
+                    'player1': { x:1, y:1 },
+                    'player2': { x:5, y:7 }
+                },
 
-        }
+                fruits: {
+                    'fruit1': { x:3, y:1 }
+                }
+            }
 
-        
 
-        
+            function renderGame(){
+                context.clearRect(0, 0, 10, 10)
 
+                for (const playerId in state.players) {
+                    const player = state.players[playerId]
+                    context.fillStyle = 'black'
+                    context.fillRect(player.x, player.y, 1, 1)
+                }
+
+                for (const fruitId in state.fruits) {
+                    const fruit = state.fruits[fruitId]
+                    context.fillStyle = 'green'
+                    context.fillRect(fruit.x, fruit.y, 1, 1)
+                }
+
+                requestAnimationFrame(renderGame)
+
+            }
+
+            return {
+                renderGame,
+                movePlayer,
+                state
+            }
+        }        
+    
         
     </script>
 
