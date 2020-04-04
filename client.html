@@ -25,11 +25,25 @@
 
 
         //regras de negócio
-        function rules(comand) {
-            const player = comand.player
-            const keyPressed = comand.keyPressed
+        function movePlayer(command) {
+            const player = state.players[command.player]
+            const keyPressed = command.keyPressed
 
-            console.log(keyPressed)
+            if (keyPressed === "ArrowUp" && player.y > 0) {
+                player.y --
+            }
+
+            if (keyPressed === "ArrowDown" && player.y < screen.height) {
+                player.y ++
+            }
+
+            if (keyPressed === "ArrowLeft" && player.x > 0) {
+                player.x --
+            }
+
+            if (keyPressed === "ArrowRight" && player.x < screen.width) {
+                player.x ++
+            }
         }
 
         //obter todos os inputs necessários no jogo
@@ -41,29 +55,29 @@
                 keyPressed
             }
 
-            rules(state)
+            movePlayer(state)
 
         }
 
         
 
         //renderizar o jogo para o usuário
+        const state = {
+            players: {
+                'player1': { x:1, y:1 },
+                'player2': { x:5, y:7 }
+            },
+
+            fruits: {
+                'fruit1': { x:3, y:1 }
+            }
+        }
+
         renderGame()
         
         function renderGame(){
 
             context.clearRect(0, 0, 10, 10)
-
-            const state = {
-                players: {
-                    'player1': { x:1, y:1 },
-                    'player2': { x:5, y:7 }
-                },
-
-                fruits: {
-                    'fruit1': { x:3, y:1 }
-                }
-            }
 
             for (const playerId in state.players) {
                 const player = state.players[playerId]
