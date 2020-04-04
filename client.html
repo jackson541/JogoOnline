@@ -27,8 +27,7 @@
         game.renderGame()
 
         const keyboardListener = createKeyboardListener()
-        keyboardListener.addObserver(game.movePlayer)
-
+        keyboardListener.subscribe(game.movePlayer)
 
         function createKeyboardListener(){
         
@@ -36,7 +35,7 @@
                 observers: []
             }
 
-            function addObserver(observerFunction) {
+            function subscribe(observerFunction) {
                 state.observers.push(observerFunction)
             }
 
@@ -46,10 +45,10 @@
                 }
             }
 
-            document.addEventListener('keydown', createEventListener)
+            document.addEventListener('keydown', handleKeydown)
 
             //obter todos os inputs necessários no jogo
-            function createEventListener(event){
+            function handleKeydown(event){
                 const keyPressed = event.key
                 
                 const state = {
@@ -62,7 +61,7 @@
             }
 
             return {
-                addObserver
+                subscribe
             }
         }
 
@@ -71,24 +70,44 @@
 
             //regras de negócio
             function movePlayer(command) {
+
+                //os atributos recebem os mesmos nomes das funções e retornam a função em vez da sua operação
+                const actions = {
+                    ArrowUp (player) {
+                        if (player.y > 0) {
+                            player.y --
+                        }
+                    },
+
+                    ArrowDown (player) {
+                        if (player.y + 1 < screen.height) {
+                            player.y ++
+                        }
+                    },
+
+                    ArrowLeft (player) {
+                        if (player.x > 0) {
+                            player.x --
+                        }
+                    },
+
+                    ArrowRight (player) {
+                        if (player.x + 1 < screen.width) {
+                            player.x ++
+                        }
+                    }
+                }
+
                 const player = game.state.players[command.player]
                 const keyPressed = command.keyPressed
 
-                if (keyPressed === "ArrowUp" && player.y > 0) {
-                    player.y --
-                }
+                const action = actions[keyPressed]
 
-                if (keyPressed === "ArrowDown" && player.y + 1 < screen.height) {
-                    player.y ++
+                if (action){
+                    action(player)
                 }
+                
 
-                if (keyPressed === "ArrowLeft" && player.x > 0) {
-                    player.x --
-                }
-
-                if (keyPressed === "ArrowRight" && player.x + 1 < screen.width) {
-                    player.x ++
-                }
             }
 
             //renderizar o jogo para o usuário
