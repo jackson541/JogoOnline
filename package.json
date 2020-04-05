@@ -1,0 +1,25 @@
+{
+  "name": "jogoonline",
+  "version": "1.0.0",
+  "description": "game multiplayer create in js",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jackson541/JogoOnline.git"
+  },
+  "author": "jackson541",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jackson541/JogoOnline/issues"
+  },
+  "homepage": "https://github.com/jackson541/JogoOnline#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.2",
+    "socket.io": "^2.3.0"
+  }
+}
