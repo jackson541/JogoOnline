@@ -25,6 +25,11 @@ export default function createGame(){
         Object.assign(state, newState)
     }
 
+    function start () {
+        const time = 2000
+        setInterval(addFruit, time)
+    }
+
     //regras de negócio
     function movePlayer(command) {
 
@@ -60,6 +65,10 @@ export default function createGame(){
                 const fruit = state.fruits[fruitId]
 
                 if (fruit.x === player.x && fruit.y === player.y){
+                    notifyAll({
+                        type: 'remove-fruit',
+                        fruitId
+                    })
                     delete state.fruits[fruitId]
                 }
             }
@@ -121,13 +130,14 @@ export default function createGame(){
 
     //adicionando e removendo fruits
     function addFruit(command) {
-        const fruitId = command.fruitId,
-        fruitX = command.fruitX, 
-        fruitY = command.fruitY;
+        const fruitId = command ? command.fruitId : Math.floor(Math.random() * 1000000000),
+        fruitX = command ? command.fruitX : Math.floor(Math.random() * state.screen.width), 
+        fruitY = command ? command.fruitY : Math.floor(Math.random() * state.screen.height)
         
         state.fruits[fruitId] = { 
             x: fruitX, 
-            y: fruitY }
+            y: fruitY 
+        }
 
         notifyAll({
             type: 'add-fruit',
@@ -153,6 +163,7 @@ export default function createGame(){
         subscribe,
         notifyAll,
         setState,
+        start,
         movePlayer,
         addPlayer,
         removePlayer,

@@ -10,6 +10,7 @@ const sockets = socketio(server)
 app.use(express.static('public'))
 
 const game = createGame()
+game.start()
 
 //subscribe genérico para todos os emits
 game.subscribe((command) => {
